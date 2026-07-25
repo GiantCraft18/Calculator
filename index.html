@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Калькулятор</title>
+  <style>
+    /* Общий сброс и фон */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(145deg, #2b3a4a 0%, #1d2a35 100%);
+      padding: 1rem;
+    }
+
+    /* Карточка калькулятора */
+    .calculator {
+      background: #1e2a36;
+      border-radius: 2.5rem;
+      padding: 2rem 1.8rem 2.2rem;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 25px 50px -8px rgba(0, 0, 0, 0.6), 
+                  inset 0 2px 4px rgba(255, 255, 255, 0.05);
+      transition: 0.2s;
+    }
+
+    /* Экран */
+    .display {
+      background: #0f171f;
+      border-radius: 2rem;
+      padding: 1.2rem 1.8rem;
+      margin-bottom: 2rem;
+      text-align: right;
+      box-shadow: inset 0 6px 10px rgba(0, 0, 0, 0.6), 
+                  0 2px 0 rgba(255, 255, 255, 0.03);
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      word-break: break-all;
+    }
+
+    .display .expression {
+      color: #8a9aa8;
+      font-size: 1rem;
+      font-weight: 300;
+      min-height: 1.8rem;
+      letter-spacing: 0.3px;
+      transition: 0.15s;
+    }
+
+    .display .result {
+      color: #f0f9ff;
+      font-size: 2.8rem;
+      font-weight: 600;
+      line-height: 1.2;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      transition: 0.15s;
+    }
+
+    .display .result.error {
+      color: #f87171;
+      font-size: 1.8rem;
+    }
+
+    /* Сетка кнопок */
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    /* Общий стиль кнопок */
+    .btn {
+      background: #2d3f4e;
+      border: none;
+      border-radius: 2rem;
+      padding: 1.2rem 0.2rem;
+      font-size: 1.8rem;
+      font-weight: 500;
+      color: #e6edf3;
+      cursor: pointer;
+      box-shadow: 0 8px 0 #0f171f, 
+                  0 4px 8px rgba(0, 0, 0, 0.3);
+      transition: all 0.07s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      letter-spacing: 0.5px;
+      line-height: 1;
+    }
+
+    .btn:active {
+      transform: translateY(6px);
+      box-shadow: 0 2px 0 #0f171f;
+    }
+
+    /* Кнопки операций */
+    .btn.operator {
+      background: #f5a623;
+      color: #1d2a35;
+      box-shadow: 0 8px 0 #b87c1a, 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn.operator:active {
+      box-shadow: 0 2px 0 #b87c1a;
+    }
+
+    /* Кнопка равно */
+    .btn.equals {
+      background: #3b9eff;
+      color: #0b141c;
+      box-shadow: 0 8px 0 #1f6bc0, 0 4px 8px rgba(0, 0, 0, 0.3);
+      font-size: 2.2rem;
+    }
+
+    .btn.equals:active {
+      box-shadow: 0 2px 0 #1f6bc0;
+    }
+
+    /* Кнопка сброса / очистки */
+    .btn.clear {
+      background: #e05a5a;
+      color: #1b1b1b;
+      box-shadow: 0 8px 0 #9e3e3e, 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn.clear:active {
+      box-shadow: 0 2px 0 #9e3e3e;
+    }
+
+    /* Кнопка удаления последнего символа */
+    .btn.backspace {
+      background: #4d6377;
+      color: #eef4f9;
+      box-shadow: 0 8px 0 #2d3d4b, 0 4px 8px rgba(0, 0, 0, 0.3);
+      font-size: 1.6rem;
+    }
+
+    .btn.backspace:active {
+      box-shadow: 0 2px 0 #2d3d4b;
+    }
+
+    /* Нулевая кнопка (занимает 2 колонки) */
+    .btn.zero {
+      grid-column: span 2;
+    }
+
+    /* Адаптив для маленьких экранов */
+    @media (max-width: 420px) {
+      .calculator {
+        padding: 1.4rem 1rem 1.6rem;
+        border-radius: 2rem;
+      }
+      .buttons {
+        gap: 10px;
+      }
+      .btn {
+        padding: 1rem 0.2rem;
+        font-size: 1.6rem;
+        border-radius: 1.8rem;
+      }
+      .display .result {
+        font-size: 2.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="calculator">
+  <!-- Дисплей -->
+  <div class="display">
+    <div class="expression" id="expressionDisplay"></div>
+    <div class="result" id="resultDisplay">0</div>
+  </div>
+
+  <!-- Кнопки -->
+  <div class="buttons">
+    <!-- Первая строка -->
+    <button class="btn clear" data-value="clear">AC</button>
+    <button class="btn backspace" data-value="backspace">⌫</button>
+    <button class="btn operator" data-value="%">%</button>
+    <button class="btn operator" data-value="/">÷</button>
+
+    <!-- Вторая строка -->
+    <button class="btn" data-value="7">7</button>
+    <button class="btn" data-value="8">8</button>
+    <button class="btn" data-value="9">9</button>
+    <button class="btn operator" data-value="*">×</button>
+
+    <!-- Третья строка -->
+    <button class="btn" data-value="4">4</button>
+    <button class="btn" data-value="5">5</button>
+    <button class="btn" data-value="6">6</button>
+    <button class="btn operator" data-value="-">−</button>
+
+    <!-- Четвёртая строка -->
+    <button class="btn" data-value="1">1</button>
+    <button class="btn" data-value="2">2</button>
+    <button class="btn" data-value="3">3</button>
+    <button class="btn operator" data-value="+">+</button>
+
+    <!-- Пятая строка: 0 (занимает 2 колонки), точка, равно -->
+    <button class="btn zero" data-value="0">0</button>
+    <button class="btn" data-value=".">,</button>
+    <button class="btn equals" data-value="=">=</button>
+  </div>
+</div>
+
+<script>
+  (function() {
+    'use strict';
+
+    // Элементы дисплея
+    const expressionDisplay = document.getElementById('expressionDisplay');
+    const resultDisplay = document.getElementById('resultDisplay');
+
+    // Состояние калькулятора
+    let currentInput = '0';          // текущее вводимое число
+    let previousInput = '';          // предыдущее число (для операций)
+    let operator = null;            // текущий оператор (+, -, *, /, %)
+    let shouldResetDisplay = false; // флаг, чтобы начать новое число после оператора или равно
+    let justEvaluated = false;      // флаг, только что нажали "="
+    let lastResult = null;          // последний результат (для повторных вычислений)
+
+    // Обновление дисплея
+    function updateDisplay() {
+      // Показываем выражение (если есть оператор)
+      let expr = '';
+      if (previousInput && operator) {
+        expr = `${formatNumber(previousInput)} ${getOperatorSymbol(operator)}`;
+      }
+      if (currentInput) {
+        expr += ` ${formatNumber(currentInput)}`;
+      }
+      expressionDisplay.textContent = expr.trim();
+
+      // Показываем результат / текущее число
+      let displayValue = currentInput || '0';
+      // Если число слишком длинное — сокращаем (но для простоты оставляем как есть)
+      resultDisplay.textContent = formatNumber(displayValue);
+      resultDisplay.classList.remove('error');
+    }
+
+    // Форматирование числа для отображения (добавляет разделители тысяч)
+    function formatNumber(value) {
+      if (value === 'Error' || value === 'Infinity' || value === '-Infinity' || isNaN(parseFloat(value))) {
+        return 'Ошибка';
+      }
+      // Преобразуем строку в число, чтобы убрать лишние нули
+      let num = parseFloat(value);
+      if (!isFinite(num)) return 'Ошибка';
+      // если целое — без десятичных
+      if (Number.isInteger(num)) {
+        return num.toString();
+      }
+      return num.toString();
+    }
+
+    // Получить символ оператора для отображения
+    function getOperatorSymbol(op) {
+      const map = {
+        '+': '+',
+        '-': '−',
+        '*': '×',
+        '/': '÷',
+        '%': '%'
+      };
+      return map[op] || op;
+    }
+
+    // Выполнить вычисление
+    function compute(a, op, b) {
+      const numA = parseFloat(a);
+      const numB = parseFloat(b);
+      if (isNaN(numA) || isNaN(numB)) return 'Error';
+
+      let result;
+      switch (op) {
+        case '+': result = numA + numB; break;
+        case '-': result = numA - numB; break;
+        case '*': result = numA * numB; break;
+        case '/': 
+          if (numB === 0) return 'Error';
+          result = numA / numB; 
+          break;
+        case '%': 
+          if (numB === 0) return 'Error';
+          result = numA % numB; 
+          break;
+        default: return 'Error';
+      }
+
+      // Обработка чисел с плавающей точкой
+      if (!isFinite(result)) return 'Error';
+      // Ограничим длину, чтобы не было слишком много знаков
+      if (typeof result === 'number' && !Number.isInteger(result)) {
+        result = parseFloat(result.toPrecision(12));
+      }
+      return result.toString();
+    }
+
+    // Основная логика при нажатии кнопки
+    function handleButton(value) {
+      // Сброс ошибки
+      if (resultDisplay.classList.contains('error')) {
+        clearAll();
+        // если нажата цифра или точка — вводим её после сброса
+        if (isDigit(value) || value === '.') {
+          currentInput = (value === '.') ? '0.' : value;
+          operator = null;
+          previousInput = '';
+          shouldResetDisplay = false;
+          justEvaluated = false;
+          updateDisplay();
+          return;
+        }
+      }
+
+      // Обработка цифр и десятичной точки
+      if (isDigit(value) || value === '.') {
+        if (justEvaluated) {
+          // Если только что посчитали, начинаем новое число
+          currentInput = (value === '.') ? '0.' : value;
+          previousInput = '';
+          operator = null;
+          shouldResetDisplay = false;
+          justEvaluated = false;
+          updateDisplay();
+          return;
+        }
+
+        if (shouldResetDisplay) {
+          currentInput = (value === '.') ? '0.' : value;
+          shouldResetDisplay = false;
+        } else {
+          // Если точка уже есть, не добавляем ещё одну
+          if (value === '.' && currentInput.includes('.')) return;
+          // Ограничим длину числа (макс 15 символов)
+          if (currentInput.replace('-', '').replace('.', '').length >= 15) return;
+          // Не допускаем лишних ведущих нулей (кроме "0.")
+          if (value !== '.' && currentInput === '0') {
+            currentInput = value;
+          } else {
+            currentInput += value;
+          }
+        }
+        updateDisplay();
+        return;
+      }
+
+      // Обработка операторов (+, -, *, /, %)
+      if (isOperator(value)) {
+        justEvaluated = false;
+        // Если уже был оператор и есть текущее число — вычисляем цепочку
+        if (operator && !shouldResetDisplay) {
+          const result = compute(previousInput, operator, currentInput);
+          if (result === 'Error') {
+            resultDisplay.textContent = 'Ошибка';
+            resultDisplay.classList.add('error');
+            currentInput = 'Error';
+            operator = null;
+            previousInput = '';
+            return;
+          }
+          previousInput = result;
+          currentInput = result;
+        } else {
+          // Если нет оператора или сброс — запоминаем текущее
+          if (!shouldResetDisplay && currentInput) {
+            previousInput = currentInput;
+          } else if (previousInput && shouldResetDisplay) {
+            // Если сброс, оставляем previousInput как есть
+          } else {
+            previousInput = currentInput || '0';
+          }
+        }
+        operator = value;
+        shouldResetDisplay = true;
+        updateDisplay();
+        return;
+      }
+
+      // Обработка равно
+      if (value === '=') {
+        if (operator && !shouldResetDisplay) {
+          const result = compute(previousInput, operator, currentInput);
+          if (result === 'Error') {
+            resultDisplay.textContent = 'Ошибка';
+            resultDisplay.classList.add('error');
+            currentInput = 'Error';
+            operator = null;
+            previousInput = '';
+            updateDisplay();
+            return;
+          }
+          currentInput = result;
+          previousInput = '';
+          operator = null;
+          justEvaluated = true;
+          shouldResetDisplay = true;
+          updateDisplay();
+        } else {
+          // Если нажали "=" без оператора — просто отображаем текущее
+          justEvaluated = true;
+          shouldResetDisplay = true;
+          // Если было выражение типа "5 +" и нажали "=" — берём previousInput
+          if (previousInput && !operator) {
+            // ничего не делаем, оставляем currentInput
+          }
+          updateDisplay();
+        }
+        return;
+      }
+
+      // Очистка (AC)
+      if (value === 'clear') {
+        clearAll();
+        updateDisplay();
+        return;
+      }
+
+      // Backspace (удаление последнего символа)
+      if (value === 'backspace') {
+        if (justEvaluated) {
+          clearAll();
+          updateDisplay();
+          return;
+        }
+        if (shouldResetDisplay) return; // не удаляем, если начинаем новое число
+        if (currentInput.length > 1) {
+          currentInput = currentInput.slice(0, -1);
+        } else {
+          currentInput = '0';
+        }
+        updateDisplay();
+        return;
+      }
+    }
+
+    // Вспомогательные функции
+    function isDigit(value) {
+      return value >= '0' && value <= '9';
+    }
+
+    function isOperator(value) {
+      return ['+', '-', '*', '/', '%'].includes(value);
+    }
+
+    function clearAll() {
+      currentInput = '0';
+      previousInput = '';
+      operator = null;
+      shouldResetDisplay = false;
+      justEvaluated = false;
+      resultDisplay.classList.remove('error');
+    }
+
+    // Навешивание обработчиков на все кнопки
+    const buttons = document.querySelectorAll('.btn');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const value = btn.dataset.value;
+        if (value !== undefined) {
+          handleButton(value);
+        }
+      });
+
+      // Поддержка тач-устройств, чтобы избежать выделения
+      btn.addEventListener('touchstart', (e) => {
+        // просто предотвращаем двойное срабатывание
+      }, { passive: true });
+    });
+
+    // Дополнительно: клавиатурная поддержка
+    document.addEventListener('keydown', (e) => {
+      const key = e.key;
+      // Цифры, точка, операторы
+      if ((key >= '0' && key <= '9') || key === '.') {
+        e.preventDefault();
+        handleButton(key);
+        return;
+      }
+      // Операторы: + - * / %
+      if (['+', '-', '*', '/', '%'].includes(key)) {
+        e.preventDefault();
+        handleButton(key);
+        return;
+      }
+      // Enter или = 
+      if (key === 'Enter' || key === '=') {
+        e.preventDefault();
+        handleButton('=');
+        return;
+      }
+      // Backspace
+      if (key === 'Backspace') {
+        e.preventDefault();
+        handleButton('backspace');
+        return;
+      }
+      // Escape или Delete — очистка
+      if (key === 'Escape' || key === 'Delete') {
+        e.preventDefault();
+        handleButton('clear');
+        return;
+      }
+    });
+
+    // Инициализация
+    updateDisplay();
+  })();
+</script>
+
+</body>
+</html>
