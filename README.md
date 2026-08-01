@@ -7,14 +7,14 @@
 ### Калькулятор
 
 <p align="center">
-  <span style="display: inline-block; padding: 0.3rem 1.2rem; margin: 0.3rem; border-radius: 30px; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.5px; background: #e34f26; color: white; border: 2px solid #e34f26;">HTML5</span>
-  <span style="display: inline-block; padding: 0.3rem 1.2rem; margin: 0.3rem; border-radius: 30px; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.5px; background: #1572b6; color: white; border: 2px solid #1572b6;">CSS3</span>
-  <span style="display: inline-block; padding: 0.3rem 1.2rem; margin: 0.3rem; border-radius: 30px; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.5px; background: #f7df1e; color: #1a1a1a; border: 2px solid #f7df1e;">JAVASCRIPT</span>
+  <span style="display: inline-block; padding: 0.4rem 1.5rem; margin: 0.4rem; border-radius: 30px; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.5px; background: #e34f26; color: white; box-shadow: 0 4px 10px rgba(227, 79, 38, 0.4);">HTML5</span>
+  <span style="display: inline-block; padding: 0.4rem 1.5rem; margin: 0.4rem; border-radius: 30px; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.5px; background: #1572b6; color: white; box-shadow: 0 4px 10px rgba(21, 114, 182, 0.4);">CSS3</span>
+  <span style="display: inline-block; padding: 0.4rem 1.5rem; margin: 0.4rem; border-radius: 30px; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.5px; background: #f7df1e; color: #1a1a1a; box-shadow: 0 4px 10px rgba(247, 223, 30, 0.4);">JAVASCRIPT</span>
 </p>
 
 <p align="center">
-  <span style="display: inline-block; padding: 0.2rem 1rem; margin: 0.2rem; border-radius: 20px; font-weight: 600; font-size: 0.85rem; background: #2d8a4e; color: white; border: 2px solid #2d8a4e;">MIT</span>
-  <span style="display: inline-block; padding: 0.2rem 1rem; margin: 0.2rem; border-radius: 20px; font-weight: 600; font-size: 0.85rem; background: #8a4e2d; color: white; border: 2px solid #8a4e2d;">LICENSE</span>
+  <span style="display: inline-block; padding: 0.3rem 1.2rem; margin: 0.3rem; border-radius: 20px; font-weight: 600; font-size: 0.85rem; background: #2d8a4e; color: white; box-shadow: 0 3px 8px rgba(45, 138, 78, 0.3);">MIT</span>
+  <span style="display: inline-block; padding: 0.3rem 1.2rem; margin: 0.3rem; border-radius: 20px; font-weight: 600; font-size: 0.85rem; background: #8a4e2d; color: white; box-shadow: 0 3px 8px rgba(138, 78, 45, 0.3);">LICENSE</span>
 </p>
 
 ---
