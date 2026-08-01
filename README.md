@@ -1,21 +1,6 @@
 <div align="center">
 
-# GiantCraft18
-
-## Calculator
-
-### Калькулятор
-
-<p align="center">
-  <span style="display: inline-block; padding: 0.3rem 1.2rem; margin: 0.2rem; border-radius: 30px; font-weight: 700; font-size: 0.9rem; background: #e34f26; color: white; box-shadow: 0 3px 8px rgba(227, 79, 38, 0.3);">HTML5</span>
-  <span style="display: inline-block; padding: 0.3rem 1.2rem; margin: 0.2rem; border-radius: 30px; font-weight: 700; font-size: 0.9rem; background: #1572b6; color: white; box-shadow: 0 3px 8px rgba(21, 114, 182, 0.3);">CSS3</span>
-  <span style="display: inline-block; padding: 0.3rem 1.2rem; margin: 0.2rem; border-radius: 30px; font-weight: 700; font-size: 0.9rem; background: #f7df1e; color: #1a1a1a; box-shadow: 0 3px 8px rgba(247, 223, 30, 0.3);">JAVASCRIPT</span>
-</p>
-
-<p align="center">
-  <span style="display: inline-block; padding: 0.2rem 1rem; margin: 0.2rem; border-radius: 20px; font-weight: 600; font-size: 0.8rem; background: #2d8a4e; color: white; box-shadow: 0 2px 6px rgba(45, 138, 78, 0.2);">MIT</span>
-  <span style="display: inline-block; padding: 0.2rem 1rem; margin: 0.2rem; border-radius: 20px; font-weight: 600; font-size: 0.8rem; background: #8a4e2d; color: white; box-shadow: 0 2px 6px rgba(138, 78, 45, 0.2);">LICENSE</span>
-</p>
+## Calculator - Калькулятор
 
 ---
 
@@ -61,13 +46,6 @@
 - **HTML** — разметка интерфейса
 - **CSS** — стили, тени, адаптивность
 - **JavaScript** — логика калькулятора
-
----
-
-## Демо
-
-Попробуйте онлайн:  
-[Открыть демо-версию](#)
 
 ---
 
