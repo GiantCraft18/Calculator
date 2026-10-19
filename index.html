@@ -3,142 +3,1047 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Калькулятор Pro</title>
+<meta name="theme-color" content="#0a0e1a">
+<title>Ultra Calculator</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
-:root{--bg:#1a1a2e;--card:#0f3460;--disp:#0a0a1a;--text:#fff;--text2:#a8b2d1;--res:#e6f1ff;--num:#1a1a3e;--numh:#2a2a5e;--op:#e94560;--oph:#ff6b81;--eq:#00d2ff;--eqh:#4de8ff;--clr:#ff6b6b;--clrh:#ff8a8a;--bk:#4a4a6a;--bkh:#5a5a8a;--shadow:rgba(0,0,0,.5);--light:rgba(255,255,255,.05);--rad:12px;--trans:.3s}
-[data-theme=light]{--bg:#f0f2f5;--card:#fff;--disp:#f8f9fa;--text:#1a1a2e;--text2:#4a4a6a;--res:#1a1a2e;--num:#e8eaed;--numh:#d5d8dd;--op:#e94560;--oph:#ff6b81;--eq:#00b4d8;--eqh:#48cae4;--clr:#ff6b6b;--clrh:#ff8a8a;--bk:#b0b8c8;--bkh:#c0c8d8;--shadow:rgba(0,0,0,.15);--light:rgba(255,255,255,.8)}
-[data-theme=green]{--bg:#0a1f0a;--card:#1a3a1a;--disp:#0a1a0a;--text:#b8e6b8;--text2:#7aaa7a;--res:#d4f0d4;--num:#1a3a1a;--numh:#2a5a2a;--op:#4caf50;--oph:#66bb6a;--eq:#00e676;--eqh:#69f0ae;--clr:#f44336;--clrh:#ef5350;--bk:#2a4a2a;--bkh:#3a5a3a}
-[data-theme=purple]{--bg:#1a0a2e;--card:#2d1b4e;--disp:#0a0a1a;--text:#e8d5ff;--text2:#b8a0d0;--res:#f0e6ff;--num:#2a1a4e;--numh:#3a2a6e;--op:#9b59b6;--oph:#af7ac5;--eq:#8e44ad;--eqh:#a569bd;--clr:#e74c3c;--clrh:#ec7063;--bk:#3a2a5a;--bkh:#4a3a6a}
-body{min-height:100vh;display:flex;justify-content:center;align-items:center;background:var(--bg);padding:clamp(.5rem,2vw,1.2rem);transition:var(--trans)}
-.calc{background:var(--card);border-radius:min(28px,5vw);padding:clamp(1rem,3vw,1.8rem);width:100%;max-width:480px;box-shadow:0 25px 50px -12px var(--shadow);border:1px solid var(--light);animation:in .5s ease-out}
-@keyframes in{0%{opacity:0;transform:translateY(30px)scale(.95)}100%{opacity:1;transform:translateY(0)scale(1)}}
-.hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:clamp(.6rem,2vw,1rem)}
-.hdr span{color:var(--text2);font-size:clamp(.6rem,1.5vw,.8rem);font-weight:300;letter-spacing:2px;opacity:.6}
-.th{display:flex;gap:clamp(3px,.5vw,6px)}
-.th button{width:clamp(20px,3vw,28px);height:clamp(20px,3vw,28px);border-radius:50%;border:2px solid transparent;cursor:pointer;transition:all .3s;flex-shrink:0}
-.th button:hover{transform:scale(1.15)}
-.th button.active{border-color:var(--text);transform:scale(1.1)}
-.th [data-theme=dark]{background:linear-gradient(135deg,#1a1a2e,#0f3460)}
-.th [data-theme=light]{background:linear-gradient(135deg,#f0f2f5,#fff);border-color:#ccc}
-.th [data-theme=green]{background:linear-gradient(135deg,#0a1f0a,#1a3a1a)}
-.th [data-theme=purple]{background:linear-gradient(135deg,#2d1b4e,#6c3483)}
-.disp{background:var(--disp);border-radius:var(--rad);padding:clamp(.5rem,1.5vw,1rem) clamp(.8rem,2vw,1.4rem);margin-bottom:clamp(.6rem,2vw,1rem);text-align:right;box-shadow:inset 0 6px 12px var(--shadow);min-height:clamp(65px,12vw,95px);display:flex;flex-direction:column;justify-content:flex-end;transition:var(--trans)}
-.expr{color:var(--text2);font-size:clamp(.65rem,1.5vw,.9rem);min-height:clamp(1rem,3vw,1.6rem);opacity:.5}
-.res{color:var(--res);font-size:clamp(2rem,7vw,3.2rem);font-weight:700;line-height:1.2;text-shadow:0 2px 8px var(--shadow);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:all .2s}
-.res.error{color:var(--clr);font-size:clamp(1.2rem,4vw,1.8rem);animation:shake .4s}
-@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
-.res.shrink{font-size:clamp(1.2rem,4vw,2rem)}
-.res.bounce{animation:bounce .2s}
-@keyframes bounce{0%{transform:scale(.8)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
-.btns{display:grid;grid-template-columns:repeat(5,1fr);gap:clamp(4px,1vw,8px)}
-.btn{background:var(--num);border:none;border-radius:var(--rad);padding:clamp(.4rem,1vw,.8rem) .1rem;font-size:clamp(.8rem,2vw,1.2rem);font-weight:600;color:var(--text);cursor:pointer;box-shadow:0 4px 0 var(--shadow);transition:all .07s;display:flex;align-items:center;justify-content:center;user-select:none;min-height:clamp(38px,8vw,52px);touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-.btn:hover{background:var(--numh);transform:translateY(-2px);box-shadow:0 6px 0 var(--shadow)}
-.btn:active{transform:translateY(2px);box-shadow:0 2px 0 var(--shadow)}
-.btn.op{background:var(--op);color:#fff}
-.btn.op:hover{background:var(--oph)}
-.btn.eq{background:var(--eq);color:var(--bg);font-size:clamp(1.2rem,3vw,1.6rem)}
-.btn.eq:hover{background:var(--eqh)}
-.btn.cl{background:var(--clr);color:#fff}
-.btn.cl:hover{background:var(--clrh)}
-.btn.bk{background:var(--bk)}
-.btn.bk:hover{background:var(--bkh)}
-.btn.zero{grid-column:span 2}
-.btn.fn{background:var(--bk);font-size:clamp(.65rem,1.5vw,.9rem);color:var(--text2)}
-.btn.fn:hover{background:var(--bkh);color:var(--text)}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0a0e1a;--bg2:#0f1628;--card:rgba(20,28,48,.72);--card-solid:#141c30;
+  --disp:rgba(6,10,20,.72);--text:#f0f4ff;--text2:#8b96b8;--text3:#5a6485;
+  --accent:#00d4ff;--accent2:#7c5cff;--accent-grad:linear-gradient(135deg,#00d4ff,#7c5cff);
+  --num:rgba(40,52,82,.65);--numh:rgba(55,70,105,.85);
+  --op:linear-gradient(135deg,#ff3d68,#ff6b8a);--eq:linear-gradient(135deg,#00d4ff,#7c5cff);
+  --fn:rgba(28,38,62,.7);--fnh:rgba(45,60,95,.9);
+  --danger:#ff4d6a;--success:#00e5a0;--warn:#ffb020;
+  --shadow:0 24px 64px -16px rgba(0,0,0,.7);
+  --border:1px solid rgba(255,255,255,.08);--radius:18px;
+  --t:.22s cubic-bezier(.2,.8,.2,1);
+}
+[data-theme=light]{
+  --bg:#e8edf7;--bg2:#f4f7fc;--card:rgba(255,255,255,.78);--card-solid:#fff;
+  --disp:rgba(240,244,252,.9);--text:#0f1628;--text2:#5a6485;--text3:#8b96b8;
+  --accent:#0088cc;--accent2:#6b46e0;
+  --num:rgba(230,236,248,.9);--numh:rgba(210,220,240,1);
+  --op:linear-gradient(135deg,#ff3d68,#ff7090);--eq:linear-gradient(135deg,#0088cc,#6b46e0);
+  --fn:rgba(220,228,244,.85);--fnh:rgba(200,212,235,1);
+  --shadow:0 24px 64px -20px rgba(30,50,90,.28);
+  --border:1px solid rgba(20,40,80,.08);
+}
+[data-theme=ocean]{
+  --bg:#041625;--bg2:#062338;--card:rgba(10,40,62,.72);--card-solid:#0a283e;
+  --disp:rgba(2,14,26,.75);--text:#c8f0ff;--text2:#5a9ab8;--text3:#3a708a;
+  --accent:#00e5ff;--accent2:#00ffa3;
+  --num:rgba(12,50,78,.7);--numh:rgba(20,70,105,.9);
+  --op:linear-gradient(135deg,#00c4cc,#00ffa3);--eq:linear-gradient(135deg,#00e5ff,#00ffa3);
+  --fn:rgba(8,38,58,.75);--fnh:rgba(15,60,90,.95);
+  --shadow:0 24px 64px -16px rgba(0,0,0,.8);
+  --border:1px solid rgba(0,229,255,.12);
+}
+[data-theme=sunset]{
+  --bg:#1a0a14;--bg2:#2a0f1e;--card:rgba(48,18,32,.72);--card-solid:#301220;
+  --disp:rgba(20,4,12,.78);--text:#ffe8f0;--text2:#c08a9e;--text3:#805a6e;
+  --accent:#ff6b3d;--accent2:#ff2d7a;
+  --num:rgba(60,24,40,.7);--numh:rgba(85,35,58,.9);
+  --op:linear-gradient(135deg,#ff2d7a,#ff6b3d);--eq:linear-gradient(135deg,#ffb020,#ff6b3d);
+  --fn:rgba(45,16,30,.75);--fnh:rgba(70,28,48,.95);
+  --shadow:0 24px 64px -16px rgba(0,0,0,.8);
+  --border:1px solid rgba(255,107,61,.15);
+}
+[data-theme=matrix]{
+  --bg:#020a04;--bg2:#041208;--card:rgba(4,26,12,.75);--card-solid:#041a0c;
+  --disp:rgba(0,8,2,.85);--text:#a8ffb8;--text2:#4a9a5a;--text3:#2a6a38;
+  --accent:#00ff66;--accent2:#00cc55;
+  --num:rgba(8,40,20,.7);--numh:rgba(15,60,30,.9);
+  --op:linear-gradient(135deg,#00ff66,#00aa44);--eq:linear-gradient(135deg,#00ff88,#00cc66);
+  --fn:rgba(4,30,14,.75);--fnh:rgba(10,50,24,.95);
+  --shadow:0 24px 64px -16px rgba(0,0,0,.9);
+  --border:1px solid rgba(0,255,102,.12);
+}
+html,body{height:100%;overflow:hidden}
+body{
+  min-height:100vh;min-height:100dvh;display:flex;justify-content:center;align-items:center;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 0%,color-mix(in srgb,var(--accent) 14%,transparent),transparent 60%),
+    radial-gradient(ellipse 70% 50% at 90% 100%,color-mix(in srgb,var(--accent2) 12%,transparent),transparent 60%),
+    var(--bg);
+  padding:clamp(.4rem,1.6vw,1rem);color:var(--text);
+  transition:background .4s,color .4s;
+}
+.calc{
+  background:var(--card);backdrop-filter:blur(24px) saturate(1.3);
+  -webkit-backdrop-filter:blur(24px) saturate(1.3);
+  border-radius:min(32px,6vw);padding:clamp(.85rem,2.6vw,1.5rem);
+  width:100%;max-width:560px;max-height:calc(100dvh - 2rem);
+  display:flex;flex-direction:column;
+  box-shadow:var(--shadow),0 0 0 1px var(--border) inset;
+  animation:in .5s cubic-bezier(.2,.8,.2,1);
+  transition:background .3s,border .3s;
+}
+@keyframes in{from{opacity:0;transform:translateY(28px) scale(.96)}to{opacity:1;transform:none}}
+
+/* ============ HEADER ============ */
+.hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:clamp(.5rem,1.6vw,.85rem);gap:.5rem}
+.brand{display:flex;align-items:center;gap:.5rem;min-width:0}
+.brand .logo{
+  width:clamp(24px,4vw,32px);height:clamp(24px,4vw,32px);border-radius:9px;
+  background:var(--accent-grad);display:grid;place-items:center;
+  font-size:clamp(.8rem,2vw,1rem);flex-shrink:0;
+  box-shadow:0 4px 14px -4px var(--accent);
+}
+.brand .name{
+  font-size:clamp(.75rem,1.9vw,.95rem);font-weight:700;letter-spacing:.5px;
+  background:var(--accent-grad);-webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;white-space:nowrap;
+}
+.th{display:flex;gap:clamp(4px,.7vw,7px)}
+.th button{
+  width:clamp(18px,3vw,24px);height:clamp(18px,3vw,24px);border-radius:50%;
+  border:2px solid transparent;cursor:pointer;transition:all var(--t);padding:0;flex-shrink:0;
+}
+.th button:hover{transform:scale(1.2)}
+.th button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.th button.active{border-color:var(--text);transform:scale(1.15)}
+.th [data-theme=dark]{background:linear-gradient(135deg,#0a0e1a,#283452)}
+.th [data-theme=light]{background:linear-gradient(135deg,#e8edf7,#fff);border-color:rgba(20,40,80,.2)}
+.th [data-theme=ocean]{background:linear-gradient(135deg,#041625,#00e5ff)}
+.th [data-theme=sunset]{background:linear-gradient(135deg,#ff2d7a,#ffb020)}
+.th [data-theme=matrix]{background:linear-gradient(135deg,#020a04,#00ff66)}
+
+/* ============ INDICATORS ============ */
+.indicators{
+  display:flex;gap:clamp(4px,.8vw,6px);margin-bottom:clamp(.4rem,1.2vw,.6rem);
+  font-size:clamp(.55rem,1.4vw,.68rem);font-weight:600;flex-wrap:wrap;
+}
+.pill{
+  padding:2px 8px;border-radius:20px;background:var(--num);color:var(--text2);
+  display:inline-flex;align-items:center;gap:3px;transition:all var(--t);
+  border:1px solid transparent;white-space:nowrap;
+}
+.pill.active{background:color-mix(in srgb,var(--accent) 22%,transparent);color:var(--accent);border-color:color-mix(in srgb,var(--accent) 40%,transparent)}
+.pill.mem.active{background:color-mix(in srgb,var(--accent2) 22%,transparent);color:var(--accent2);border-color:color-mix(in srgb,var(--accent2) 40%,transparent)}
+.pill.clickable{cursor:pointer}
+.pill.clickable:hover{background:var(--numh)}
+
+/* ============ DISPLAY ============ */
+.disp{
+  background:var(--disp);border-radius:var(--radius);
+  padding:clamp(.6rem,1.8vw,1rem) clamp(.9rem,2.2vw,1.3rem);
+  margin-bottom:clamp(.55rem,1.8vw,.85rem);text-align:right;
+  box-shadow:inset 0 4px 18px rgba(0,0,0,.28),inset 0 -1px 0 rgba(255,255,255,.03);
+  min-height:clamp(88px,14vw,120px);
+  display:flex;flex-direction:column;justify-content:flex-end;gap:.15rem;
+  transition:background var(--t);position:relative;overflow:hidden;
+  border:var(--border);
+}
+.disp::before{
+  content:'';position:absolute;inset:0;border-radius:var(--radius);
+  background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 6%,transparent),transparent 50%);
+  pointer-events:none;
+}
+.expr{
+  color:var(--text2);font-size:clamp(.72rem,1.8vw,.95rem);min-height:1.2em;
+  opacity:.75;overflow-x:auto;white-space:nowrap;scrollbar-width:none;
+  font-variant-numeric:tabular-nums;letter-spacing:.3px;
+  transition:opacity .2s;
+}
+.expr::-webkit-scrollbar{display:none}
+.res{
+  color:var(--text);font-size:clamp(2rem,7.5vw,3.2rem);font-weight:800;line-height:1.1;
+  overflow-x:auto;white-space:nowrap;scrollbar-width:none;
+  font-variant-numeric:tabular-nums;letter-spacing:-.5px;
+  transition:font-size .18s,color .18s;position:relative;z-index:1;
+  text-shadow:0 0 30px color-mix(in srgb,var(--accent) 25%,transparent);
+}
+.res::-webkit-scrollbar{display:none}
+.res.error{color:var(--danger);font-size:clamp(1.05rem,3.4vw,1.55rem);animation:shake .45s;text-shadow:none}
+@keyframes shake{0%,100%{transform:translateX(0)}15%{transform:translateX(-10px)}30%{transform:translateX(10px)}45%{transform:translateX(-6px)}60%{transform:translateX(6px)}80%{transform:translateX(-3px)}}
+.res.shrink{font-size:clamp(1.1rem,3.8vw,1.75rem)}
+.res.bounce{animation:bounce .25s cubic-bezier(.3,1.6,.5,1)}
+@keyframes bounce{0%{transform:scale(.82)}60%{transform:scale(1.06)}100%{transform:scale(1)}}
+.cursor{
+  display:inline-block;width:2px;height:1em;background:var(--accent);
+  margin-left:2px;vertical-align:text-bottom;animation:blink 1.1s step-end infinite;
+  box-shadow:0 0 8px var(--accent);
+}
+@keyframes blink{50%{opacity:0}}
+
+/* ============ MODE TOGGLE ============ */
+.mode-row{display:flex;gap:6px;margin-bottom:clamp(.4rem,1.2vw,.6rem)}
+.mode-btn{
+  flex:1;padding:clamp(.3rem,.8vw,.45rem);border-radius:10px;border:none;
+  background:var(--fn);color:var(--text2);cursor:pointer;font-weight:600;
+  font-size:clamp(.6rem,1.5vw,.72rem);transition:all var(--t);
+  display:flex;align-items:center;justify-content:center;gap:4px;
+}
+.mode-btn:hover{background:var(--fnh);color:var(--text)}
+.mode-btn.active{background:var(--accent-grad);color:#fff;box-shadow:0 4px 14px -4px var(--accent)}
+
+/* ============ BUTTONS ============ */
+.btns{display:grid;grid-template-columns:repeat(5,1fr);gap:clamp(4px,.9vw,8px);flex:1;min-height:0}
+.btns.scientific{grid-template-columns:repeat(6,1fr)}
+.btn{
+  background:var(--num);border:none;border-radius:var(--radius);
+  padding:clamp(.35rem,.9vw,.7rem) .1rem;
+  font-size:clamp(.85rem,2.1vw,1.15rem);font-weight:600;color:var(--text);
+  cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.06);
+  transition:transform .08s,box-shadow .08s,background var(--t),color var(--t);
+  display:flex;align-items:center;justify-content:center;user-select:none;
+  min-height:clamp(38px,7.8vw,52px);touch-action:manipulation;
+  position:relative;overflow:hidden;
+}
+.btn:hover{background:var(--numh);transform:translateY(-1px);box-shadow:0 4px 0 rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.08)}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.35)}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn.op{background:var(--op);color:#fff;box-shadow:0 3px 0 rgba(120,0,20,.5),inset 0 1px 0 rgba(255,255,255,.2)}
+.btn.op:hover{box-shadow:0 4px 0 rgba(120,0,20,.5),0 0 20px -4px var(--op)}
+.btn.eq{background:var(--eq);color:#fff;font-size:clamp(1.15rem,3vw,1.5rem);font-weight:800;box-shadow:0 3px 0 rgba(0,60,90,.5),inset 0 1px 0 rgba(255,255,255,.25)}
+.btn.eq:hover{box-shadow:0 4px 0 rgba(0,60,90,.5),0 0 24px -2px var(--accent)}
+.btn.cl{background:linear-gradient(135deg,#ff3d68,#ff2d5a);color:#fff;font-weight:700;box-shadow:0 3px 0 rgba(120,0,20,.5),inset 0 1px 0 rgba(255,255,255,.2)}
+.btn.cl:hover{box-shadow:0 4px 0 rgba(120,0,20,.5),0 0 20px -4px var(--danger)}
+.btn.fn{background:var(--fn);font-size:clamp(.65rem,1.6vw,.82rem);color:var(--text2);font-weight:600}
+.btn.fn:hover{background:var(--fnh);color:var(--text)}
 .btn.span2{grid-column:span 2}
-.st{display:flex;justify-content:space-between;margin-top:clamp(.4rem,1.5vw,.8rem);color:var(--text2);font-size:clamp(.5rem,1.2vw,.7rem);opacity:.4}
-.hist{max-height:clamp(60px,15vw,120px);overflow-y:auto;margin-top:clamp(4px,1vw,8px);padding:clamp(3px,1vw,6px);background:var(--disp);border-radius:8px;transition:var(--trans)}
-.hist-item{display:flex;justify-content:space-between;padding:clamp(2px,.5vw,4px) clamp(4px,1vw,8px);border-radius:4px;cursor:pointer;transition:all .2s;color:var(--text2);font-size:clamp(9px,1.5vw,12px)}
+.btn.zero{grid-column:span 2}
+.btn.active-op{box-shadow:0 0 0 2px var(--accent) inset,0 3px 0 rgba(0,0,0,.35),0 0 16px -2px var(--accent)}
+.btn .ripple{
+  position:absolute;border-radius:50%;background:rgba(255,255,255,.4);
+  transform:scale(0);animation:ripple .55s ease-out;pointer-events:none;
+}
+@keyframes ripple{to{transform:scale(3.5);opacity:0}}
+
+/* ============ FOOTER / HISTORY ============ */
+.foot{display:flex;justify-content:space-between;align-items:center;gap:.5rem;margin-top:clamp(.4rem,1.2vw,.6rem);font-size:clamp(.5rem,1.3vw,.64rem);color:var(--text3)}
+.foot .hint{display:flex;align-items:center;gap:4px}
+.hist-wrap{margin-top:clamp(4px,.9vw,7px)}
+.hist-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.hist-head .lbl{color:var(--text3);font-size:clamp(.52rem,1.3vw,.66rem);text-transform:uppercase;letter-spacing:1.2px;font-weight:700}
+.hist-actions{display:flex;gap:4px}
+.hist-actions button{
+  background:none;border:none;color:var(--text3);cursor:pointer;
+  font-size:clamp(.52rem,1.3vw,.66rem);padding:3px 7px;border-radius:6px;
+  transition:all var(--t);font-weight:600;
+}
+.hist-actions button:hover{background:var(--num);color:var(--text)}
+.hist{
+  max-height:clamp(52px,13vw,110px);overflow-y:auto;
+  padding:clamp(3px,.8vw,5px);background:var(--disp);border-radius:12px;
+  transition:background var(--t);border:var(--border);
+}
+.hist-item{
+  display:flex;justify-content:space-between;gap:.5rem;align-items:center;
+  padding:clamp(3px,.6vw,5px) clamp(5px,1vw,8px);border-radius:7px;
+  cursor:pointer;transition:background .15s,color .15s;color:var(--text2);
+  font-size:clamp(10px,1.6vw,12.5px);font-variant-numeric:tabular-nums;
+}
 .hist-item:hover{background:var(--num);color:var(--text)}
-.hist-empty{color:var(--text2);text-align:center;padding:clamp(4px,1vw,8px);font-size:clamp(9px,1.5vw,12px);opacity:.4}
-.toast{position:fixed;bottom:clamp(10px,3vh,30px);left:50%;transform:translateX(-50%);background:rgba(0,0,0,.85);color:#fff;padding:clamp(6px,1.5vw,12px) clamp(12px,3vw,24px);border-radius:clamp(8px,2vw,14px);font-size:clamp(11px,1.5vw,14px);z-index:9999;animation:toastIn .3s;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.1);pointer-events:none;font-weight:500;white-space:nowrap}
-@keyframes toastIn{0%{opacity:0;transform:translateX(-50%)translateY(20px)}100%{opacity:1;transform:translateX(-50%)translateY(0)}}
-::-webkit-scrollbar{width:3px}
-::-webkit-scrollbar-thumb{background:var(--text2);border-radius:3px}
-@media(max-width:400px){.btns{gap:3px}.btn{min-height:34px;font-size:.7rem;border-radius:6px}.btn.fn{font-size:.6rem}.btn.eq{font-size:1rem}}
-@media(min-width:768px){.calc{max-width:520px}.btn{min-height:56px;font-size:1.3rem}}
+.hist-item .h-expr{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.hist-item .h-time{opacity:.5;font-size:9px;flex-shrink:0}
+.hist-empty{color:var(--text3);text-align:center;padding:clamp(5px,1.2vw,9px);font-size:clamp(10px,1.6vw,12px);opacity:.55}
+
+/* ============ TOAST ============ */
+.toast{
+  position:fixed;bottom:clamp(12px,3vh,28px);left:50%;transform:translateX(-50%);
+  background:rgba(10,14,26,.94);color:#fff;padding:clamp(8px,1.6vw,12px) clamp(14px,3vw,22px);
+  border-radius:14px;font-size:clamp(11px,1.6vw,13px);z-index:9999;
+  animation:toastIn .35s cubic-bezier(.2,.8,.2,1);
+  backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.14);
+  pointer-events:none;font-weight:600;white-space:nowrap;max-width:92vw;
+  overflow:hidden;text-overflow:ellipsis;
+  box-shadow:0 16px 40px -8px rgba(0,0,0,.6);
+}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(24px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:var(--text3);border-radius:4px}
+
+@media(max-width:400px){
+  .btns{gap:3px}.btn{min-height:36px;font-size:.74rem;border-radius:10px}
+  .btn.fn{font-size:.6rem}.btn.eq{font-size:1rem}
+  .calc{padding:.7rem;border-radius:22px}
+}
+@media(min-width:768px){
+  .calc{max-width:620px}.btn{min-height:56px;font-size:1.2rem}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<div class="calc">
-<div class="hdr"><span>✦ Калькулятор</span><div class="th">
-<button class="active" data-theme="dark"></button>
-<button data-theme="light"></button>
-<button data-theme="green"></button>
-<button data-theme="purple"></button>
-</div></div>
-<div class="disp"><div class="expr" id="e"></div><div class="res" id="r">0</div></div>
-<div class="btns">
-<button class="btn cl" data-v="c">AC</button>
-<button class="btn bk" data-v="b">⌫</button>
-<button class="btn fn" data-v="±">±</button>
-<button class="btn fn" data-v="√">√</button>
-<button class="btn fn" data-v="x²">x²</button>
-<button class="btn bk" data-v="mc">MC</button>
-<button class="btn bk" data-v="mr">MR</button>
-<button class="btn bk" data-v="m+">M+</button>
-<button class="btn bk" data-v="m-">M-</button>
-<button class="btn op" data-v="%">%</button>
-<button class="btn" data-v="7">7</button>
-<button class="btn" data-v="8">8</button>
-<button class="btn" data-v="9">9</button>
-<button class="btn op" data-v="/">÷</button>
-<button class="btn op" data-v="*">×</button>
-<button class="btn" data-v="4">4</button>
-<button class="btn" data-v="5">5</button>
-<button class="btn" data-v="6">6</button>
-<button class="btn op" data-v="-">−</button>
-<button class="btn op" data-v="+">+</button>
-<button class="btn" data-v="1">1</button>
-<button class="btn" data-v="2">2</button>
-<button class="btn" data-v="3">3</button>
-<button class="btn eq span2" data-v="=">=</button>
-<button class="btn zero" data-v="0">0</button>
-<button class="btn" data-v=".">,</button>
-<button class="btn fn" data-v="copy">📋</button>
+<div class="calc" role="application" aria-label="Ultra калькулятор">
+  <div class="hdr">
+    <div class="brand">
+      <div class="logo">⚡</div>
+      <span class="name">ULTRA CALC</span>
+    </div>
+    <div class="th" role="group" aria-label="Темы">
+      <button class="active" data-theme="dark" aria-label="Тёмная"></button>
+      <button data-theme="light" aria-label="Светлая"></button>
+      <button data-theme="ocean" aria-label="Океан"></button>
+      <button data-theme="sunset" aria-label="Закат"></button>
+      <button data-theme="matrix" aria-label="Матрица"></button>
+    </div>
+  </div>
+
+  <div class="indicators">
+    <span class="pill mem" id="pill-mem">💾 —</span>
+    <span class="pill clickable active" id="pill-angle" title="Переключить угол">DEG</span>
+    <span class="pill" id="pill-mode">BASIC</span>
+  </div>
+
+  <div class="disp">
+    <div class="expr" id="e" aria-live="polite"></div>
+    <div class="res" id="r" aria-live="polite" aria-atomic="true">0<span class="cursor"></span></div>
+  </div>
+
+  <div class="mode-row">
+    <button class="mode-btn active" data-mode="basic" id="m-basic">📐 Basic</button>
+    <button class="mode-btn" data-mode="scientific" id="m-sci">🔬 Scientific</button>
+  </div>
+
+  <div class="btns" id="btns"></div>
+
+  <div class="foot">
+    <span class="hint">⌨️ Клавиатура</span>
+    <span id="hint-keys">Enter = · Esc = AC</span>
+  </div>
+
+  <div class="hist-wrap">
+    <div class="hist-head">
+      <span class="lbl">История</span>
+      <div class="hist-actions">
+        <button id="hexp" type="button" title="Экспорт">⬇ Экспорт</button>
+        <button id="hclear" type="button" title="Очистить">🗑 Очистить</button>
+      </div>
+    </div>
+    <div class="hist" id="h"></div>
+  </div>
 </div>
-<div class="st"><span>⌨️ Клавиатура</span><span id="m">💾 Память</span></div>
-<div class="hist" id="h"><div class="hist-empty">История пуста</div></div>
-</div>
+
 <script>
-(()=>{const E=document.getElementById('e'),R=document.getElementById('r'),M=document.getElementById('m'),H=document.getElementById('h');
-let s={c:'0',p:'',o:null,r:!1,j:!1,m:null,h:[],a:!1};
-const setTheme=t=>{document.documentElement.setAttribute('data-theme',t);document.querySelectorAll('.th button').forEach(b=>b.classList.toggle('active',b.dataset.theme===t));localStorage.setItem('t',t)};
-setTheme(localStorage.getItem('t')||'dark');
-document.querySelectorAll('.th button').forEach(b=>b.onclick=()=>setTheme(b.dataset.theme));
-const d=v=>v>='0'&&v<='9',O=v=>['+','-','*','/','%'].includes(v);
-const F=v=>{if(v==='Error'||!isFinite(parseFloat(v)))return'Ошибка';let n=parseFloat(v);if(Number.isInteger(n))return n.toString();let t=n.toString();return t.length>16?parseFloat(n.toPrecision(12)).toString():t};
-const S=o=>({'+':'+','-':'−','*':'×','/':'÷','%':'%'})[o]||o;
-const C=(a,o,b)=>{let n1=parseFloat(a),n2=parseFloat(b);if(isNaN(n1)||isNaN(n2))return'Error';let r;switch(o){case'+':r=n1+n2;break;case'-':r=n1-n2;break;case'*':r=n1*n2;break;case'/':r=n2===0?'Error':n1/n2;break;case'%':r=s.p&&s.o?n1*(n2/100):n1%n2;break;default:return'Error'}return r==='Error'||!isFinite(r)?'Error':(typeof r==='number'&&!Number.isInteger(r)?parseFloat(r.toPrecision(12)):r).toString()};
-const T=(msg,icon='📌')=>{const t=document.createElement('div');t.className='toast';t.textContent=`${icon} ${msg}`;document.body.appendChild(t);setTimeout(()=>{t.style.opacity=0;setTimeout(()=>t.remove(),300)},1500)};
-const addHistory=(expr,result)=>{s.h.unshift({expr,result,time:new Date().toLocaleTimeString()});if(s.h.length>10)s.h.pop();localStorage.setItem('h',JSON.stringify(s.h));updateHistory()};
-const updateHistory=()=>{H.innerHTML=s.h.length===0?'<div class="hist-empty">История пуста</div>':s.h.slice(0,8).map((item,i)=>`<div class="hist-item" data-i="${i}"><span>${item.expr}=${item.result}</span><span style="opacity:.4;font-size:9px">${item.time}</span></div>`).join('')};
-try{const saved=localStorage.getItem('h');if(saved)s.h=JSON.parse(saved)}catch(e){}
-const copy=()=>{if(s.c&&s.c!=='Error'){const t=F(s.c);navigator.clipboard?navigator.clipboard.writeText(t).then(()=>T('Скопировано!','✅')):(()=>{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);T('Скопировано!','✅')})()}};
-const U=(b=!1)=>{let t='';if(s.p&&s.o)t=`${F(s.p)} ${S(s.o)}`;if(s.c&&s.c!=='Error')t+=` ${F(s.c)}`;E.textContent=t.trim();let v=s.c||'0',f=F(v);R.textContent=f;R.className='res'+(f==='Ошибка'||s.c==='Error'?' error':'')+(f.length>10&&f!=='Ошибка'?' shrink':'')+(b&&f!=='Ошибка'?' bounce':'');if(b&&f!=='Ошибка')setTimeout(()=>R.classList.remove('bounce'),300);M.textContent=s.m!==null?`🧠 ${F(s.m)}`:'💾 Память'};
-const Cl=()=>{s={c:'0',p:'',o:null,r:!1,j:!1,m:s.m,h:s.h,a:!1};R.className='res'};
-const Hnd=v=>{
-if(s.c==='Error'){if(v==='c'){Cl();U();return}Cl();if(d(v)||v==='.'){s.c=v==='.'?'0.':v;s.r=!1;s.j=!1;U(1);return}if(O(v)||v==='='||v==='b'){U();return}}
-if(v==='±'){if(s.c!=='0'&&s.c!=='Error'){s.c=s.c.startsWith('-')?s.c.slice(1):'-'+s.c;U(1)}return}
-if(v==='√'){if(s.c!=='Error'){let n=parseFloat(s.c);if(n<0){T('Корень из отрицательного','❌');return}let r=Math.sqrt(n);if(!isFinite(r)){T('Ошибка','❌');return}s.c=r.toString();s.j=1;s.r=1;U(1)}return}
-if(v==='x²'){if(s.c!=='Error'){let n=parseFloat(s.c);s.c=(n*n).toString();s.j=1;s.r=1;U(1)}return}
-if(v==='copy'){copy();return}
-if(v==='mc'){s.m=null;U();T('Память очищена','🗑️');return}
-if(v==='mr'){if(s.m!==null){s.c=s.m.toString();s.r=1;s.j=0;U(1);T('Память загружена','📥')}return}
-if(v==='m+'){let n=parseFloat(s.c);if(!isNaN(n)&&isFinite(n)){s.m=(s.m||0)+n;U();T(`Добавлено: ${F(s.m)}`,'➕')}return}
-if(v==='m-'){let n=parseFloat(s.c);if(!isNaN(n)&&isFinite(n)){s.m=(s.m||0)-n;U();T(`Вычтено: ${F(s.m)}`,'➖')}return}
-if(d(v)||v==='.'){if(s.j){s.c=v==='.'?'0.':v;s.p='';s.o=null;s.r=!1;s.j=!1;U(1);return}if(s.r){s.c=v==='.'?'0.':v;s.r=!1}else{if(v==='.'&&s.c.includes('.'))return;if(s.c.replace('-','').replace('.','').length>=15){T('Лимит символов','⚠️');return}s.c=v!=='.'&&s.c==='0'?v:s.c+v}U(1);return}
-if(O(v)){s.j=!1;if(s.o&&!s.r){let r=C(s.p,s.o,s.c);if(r==='Error'){s.c='Error';s.o=null;s.p='';U();T('Ошибка вычисления','❌');return}s.p=r;s.c=r}else{if(!s.r&&s.c)s.p=s.c;else if(!s.p)s.p=s.c||'0'}s.o=v;s.r=1;U();return}
-if(v==='='){if(s.o&&!s.r){let r=C(s.p,s.o,s.c);if(r==='Error'){s.c='Error';s.o=null;s.p='';U();T('Деление на ноль','❌');return}const expr=`${F(s.p)} ${S(s.o)} ${F(s.c)}`;addHistory(expr,F(r));s.c=r;s.p='';s.o=null;s.j=1;s.r=1;U(1);T(`= ${F(r)}`,'✅')}else{s.j=1;s.r=1;U()}return}
-if(v==='c'){Cl();U();return}
-if(v==='b'){if(s.j){Cl();U();return}if(s.r)return;s.c=s.c.length>1?s.c.slice(0,-1):'0';U()}
+(() => {
+'use strict';
+
+const $ = id => document.getElementById(id);
+const E = $('e'), R = $('r'), H = $('h'), BTNS = $('btns');
+const PILL_MEM = $('pill-mem'), PILL_ANGLE = $('pill-angle'), PILL_MODE = $('pill-mode');
+
+/* ================= STATE ================= */
+const S = {
+  input: '',
+  result: '0',
+  justEvaluated: false,
+  memory: null,
+  history: [],
+  error: false,
+  angle: 'DEG', // DEG | RAD | GRAD
+  mode: 'basic', // basic | scientific
 };
-document.querySelectorAll('.btn').forEach(b=>{b.onclick=()=>{const v=b.dataset.v;if(v!==undefined)Hnd(v)}});
-document.addEventListener('keydown',e=>{const k=e.key;if(d(k)||k==='.'){e.preventDefault();Hnd(k);return}if(O(k)){e.preventDefault();Hnd(k);return}if(k==='Enter'||k==='='){e.preventDefault();Hnd('=');return}if(k==='Backspace'){e.preventDefault();Hnd('b');return}if(k==='Escape'||k==='Delete'){e.preventDefault();Hnd('c');return}if(k==='m')Hnd('mc');if(k==='r')Hnd('mr');if(k==='p')Hnd('m+');if(k==='s')Hnd('±');if(k==='q')Hnd('√');if(k==='w')Hnd('x²');if(k==='c'&&e.ctrlKey){e.preventDefault();Hnd('copy')}});
-document.addEventListener('click',e=>{const item=e.target.closest('.hist-item');if(item){const idx=parseInt(item.dataset.i);if(!isNaN(idx)&&s.h[idx]){s.c=s.h[idx].result;s.r=1;s.j=0;U(1);T('Результат вставлен','📋')}}});
-Cl();U();updateHistory();
-setTimeout(()=>T('Горячие клавиши: m-память, s-знак, q-корень','⌨️'),800);
+const MAX_INPUT = 200;
+
+/* ================= STORAGE ================= */
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('ultra-' + k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem('ultra-' + k, JSON.stringify(v)); } catch {} },
+};
+
+/* ================= THEME ================= */
+const setTheme = t => {
+  document.documentElement.setAttribute('data-theme', t);
+  document.querySelectorAll('.th button').forEach(b => b.classList.toggle('active', b.dataset.theme === t));
+  store.set('theme', t);
+  const meta = document.querySelector('meta[name=theme-color]');
+  const colors = { dark: '#0a0e1a', light: '#e8edf7', ocean: '#041625', sunset: '#1a0a14', matrix: '#020a04' };
+  if (meta) meta.content = colors[t] || '#0a0e1a';
+};
+setTheme(store.get('theme', 'dark'));
+document.querySelectorAll('.th button').forEach(b => b.onclick = () => setTheme(b.dataset.theme));
+
+/* ================= FORMAT ================= */
+const fmt = n => {
+  if (typeof n === 'string') n = parseFloat(n);
+  if (!isFinite(n)) return 'Ошибка';
+  if (Object.is(n, -0)) n = 0;
+  if (Number.isInteger(n) && Math.abs(n) < 1e15) return n.toString();
+  const abs = Math.abs(n);
+  if (abs !== 0 && (abs < 1e-9 || abs >= 1e15)) return n.toExponential(9).replace(/\.?0+e/, 'e');
+  return parseFloat(n.toPrecision(14)).toString();
+};
+
+/* ================= ANGLE CONVERT ================= */
+const toRad = x => {
+  if (S.angle === 'RAD') return x;
+  if (S.angle === 'GRAD') return x * Math.PI / 200;
+  return x * Math.PI / 180;
+};
+const fromRad = x => {
+  if (S.angle === 'RAD') return x;
+  if (S.angle === 'GRAD') return x * 200 / Math.PI;
+  return x * 180 / Math.PI;
+};
+
+/* ================= PARSER ================= */
+// Grammar:
+// expr    := term (('+'|'-') term)*
+// term    := factor (('*'|'/'|'%') factor)*
+// factor  := unary ('^' factor)?        // right-assoc
+// unary   := ('+'|'-') unary | postfix
+// postfix := primary ('!' | '²')*
+// primary := number | '(' expr ')' | const | func '(' expr ')' | '√' unary
+const Parser = {
+  tokens: [], pos: 0,
+
+  tokenize(src) {
+    const t = [];
+    let i = 0;
+    const isDigit = c => c >= '0' && c <= '9';
+    const isAlpha = c => /[a-z]/i.test(c);
+    while (i < src.length) {
+      const c = src[i];
+      if (c === ' ') { i++; continue; }
+      if (isDigit(c) || c === '.') {
+        let j = i, dot = 0;
+        while (j < src.length && (isDigit(src[j]) || src[j] === '.')) {
+          if (src[j] === '.') dot++;
+          j++;
+        }
+        if (dot > 1) throw new Error('Некорректное число');
+        t.push({ type: 'num', value: src.slice(i, j) });
+        i = j; continue;
+      }
+      if (isAlpha(c)) {
+        let j = i;
+        while (j < src.length && isAlpha(src[j])) j++;
+        t.push({ type: 'func', value: src.slice(i, j).toLowerCase() });
+        i = j; continue;
+      }
+      if ('+-*/^%()!²√'.includes(c)) { t.push({ type: 'op', value: c }); i++; continue; }
+      if (c === 'π') { t.push({ type: 'num', value: String(Math.PI) }); i++; continue; }
+      if (c === 'e') { t.push({ type: 'num', value: String(Math.E) }); i++; continue; }
+      throw new Error('Символ: ' + c);
+    }
+    return t;
+  },
+
+  peek() { return this.tokens[this.pos]; },
+  next() { return this.tokens[this.pos++]; },
+
+  parse(src) {
+    this.tokens = this.tokenize(src);
+    this.pos = 0;
+    if (!this.tokens.length) throw new Error('Пустое выражение');
+    const v = this.parseExpr();
+    if (this.pos < this.tokens.length) throw new Error('Лишние символы');
+    return v;
+  },
+
+  parseExpr() {
+    let v = this.parseTerm();
+    while (this.peek() && (this.peek().value === '+' || this.peek().value === '-')) {
+      const op = this.next().value;
+      const r = this.parseTerm();
+      v = op === '+' ? v + r : v - r;
+    }
+    return v;
+  },
+
+  parseTerm() {
+    let v = this.parseFactor();
+    while (this.peek() && ['*', '/', '%'].includes(this.peek().value)) {
+      const op = this.next().value;
+      const r = this.parseFactor();
+      if (op === '*') v = v * r;
+      else if (op === '/') {
+        if (r === 0) throw new Error('Деление на ноль');
+        v = v / r;
+      } else {
+        // % — процент от: a % b = a * b / 100
+        v = v * r / 100;
+      }
+    }
+    return v;
+  },
+
+  parseFactor() {
+    let v = this.parseUnary();
+    if (this.peek() && this.peek().value === '^') {
+      this.next();
+      v = Math.pow(v, this.parseFactor());
+    }
+    return v;
+  },
+
+  parseUnary() {
+    const t = this.peek();
+    if (t && (t.value === '+' || t.value === '-')) {
+      this.next();
+      const v = this.parseUnary();
+      return t.value === '-' ? -v : v;
+    }
+    if (t && t.value === '√') {
+      this.next();
+      const v = this.parseUnary();
+      if (v < 0) throw new Error('√ из отрицательного');
+      return Math.sqrt(v);
+    }
+    return this.parsePostfix();
+  },
+
+  parsePostfix() {
+    let v = this.parsePrimary();
+    while (this.peek() && (this.peek().value === '!' || this.peek().value === '²')) {
+      const op = this.next().value;
+      if (op === '²') v = v * v;
+      else {
+        if (v < 0 || !Number.isInteger(v)) throw new Error('n!: целое ≥ 0');
+        if (v > 170) throw new Error('n! слишком велик');
+        let f = 1;
+        for (let k = 2; k <= v; k++) f *= k;
+        v = f;
+      }
+    }
+    return v;
+  },
+
+  parsePrimary() {
+    const t = this.peek();
+    if (!t) throw new Error('Неожиданный конец');
+    if (t.type === 'num') {
+      this.next();
+      const n = parseFloat(t.value);
+      if (isNaN(n)) throw new Error('Число');
+      return n;
+    }
+    if (t.type === 'func') {
+      this.next();
+      const fn = t.value;
+      // Константы без скобок
+      if (fn === 'pi') return Math.PI;
+      if (fn === 'e') return Math.E;
+      // Функции требуют скобок
+      if (!this.peek() || this.peek().value !== '(') throw new Error('Нужны скобки после ' + fn);
+      this.next(); // (
+      const arg = this.parseExpr();
+      if (!this.peek() || this.peek().value !== ')') throw new Error('Нет )');
+      this.next(); // )
+      return this.applyFunc(fn, arg);
+    }
+    if (t.value === '(') {
+      this.next();
+      const v = this.parseExpr();
+      if (!this.peek() || this.peek().value !== ')') throw new Error('Нет )');
+      this.next();
+      return v;
+    }
+    throw new Error('Токен: ' + t.value);
+  },
+
+  applyFunc(fn, x) {
+    switch (fn) {
+      case 'sin': return Math.sin(toRad(x));
+      case 'cos': return Math.cos(toRad(x));
+      case 'tan': {
+        const r = toRad(x);
+        const c = Math.cos(r);
+        if (Math.abs(c) < 1e-14) throw new Error('tan: не определён');
+        return Math.sin(r) / c;
+      }
+      case 'asin': {
+        if (x < -1 || x > 1) throw new Error('asin: |x| ≤ 1');
+        return fromRad(Math.asin(x));
+      }
+      case 'acos': {
+        if (x < -1 || x > 1) throw new Error('acos: |x| ≤ 1');
+        return fromRad(Math.acos(x));
+      }
+      case 'atan': return fromRad(Math.atan(x));
+      case 'sinh': return Math.sinh(x);
+      case 'cosh': return Math.cosh(x);
+      case 'tanh': return Math.tanh(x);
+      case 'ln': {
+        if (x <= 0) throw new Error('ln: x > 0');
+        return Math.log(x);
+      }
+      case 'log': {
+        if (x <= 0) throw new Error('log: x > 0');
+        return Math.log10(x);
+      }
+      case 'log2': {
+        if (x <= 0) throw new Error('log₂: x > 0');
+        return Math.log2(x);
+      }
+      case 'exp': return Math.exp(x);
+      case 'abs': return Math.abs(x);
+      case 'sqrt': {
+        if (x < 0) throw new Error('√: x ≥ 0');
+        return Math.sqrt(x);
+      }
+      case 'cbrt': return Math.cbrt(x);
+      case 'floor': return Math.floor(x);
+      case 'ceil': return Math.ceil(x);
+      case 'round': return Math.round(x);
+      default: throw new Error('Функция: ' + fn);
+    }
+  },
+};
+
+/* ================= AUTO-CLOSE ================= */
+const autoClose = expr => {
+  let open = 0;
+  for (const c of expr) {
+    if (c === '(') open++;
+    else if (c === ')') open--;
+    if (open < 0) throw new Error('Лишняя )');
+  }
+  return expr + ')'.repeat(open);
+};
+
+/* ================= EVALUATE ================= */
+const evaluate = expr => {
+  const safe = autoClose(expr);
+  const v = Parser.parse(safe);
+  if (typeof v !== 'number' || isNaN(v)) throw new Error('Ошибка');
+  if (!isFinite(v)) throw new Error('Переполнение');
+  return fmt(v);
+};
+
+/* ================= HISTORY ================= */
+const loadHistory = () => { S.history = store.get('history', []) || []; };
+const saveHistory = () => store.set('history', S.history.slice(0, 30));
+const addHistory = (expr, result) => {
+  S.history.unshift({ expr, result, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) });
+  if (S.history.length > 30) S.history.length = 30;
+  saveHistory();
+  renderHistory();
+};
+const renderHistory = () => {
+  H.innerHTML = '';
+  if (!S.history.length) {
+    const d = document.createElement('div');
+    d.className = 'hist-empty';
+    d.textContent = 'История пуста';
+    H.appendChild(d);
+    return;
+  }
+  S.history.slice(0, 15).forEach((item, i) => {
+    const row = document.createElement('div');
+    row.className = 'hist-item';
+    row.dataset.i = i;
+    const ex = document.createElement('span');
+    ex.className = 'h-expr';
+    ex.textContent = `${item.expr} = ${item.result}`;
+    const tm = document.createElement('span');
+    tm.className = 'h-time';
+    tm.textContent = item.time;
+    row.append(ex, tm);
+    H.appendChild(row);
+  });
+};
+H.addEventListener('click', e => {
+  const row = e.target.closest('.hist-item');
+  if (!row) return;
+  const item = S.history[+row.dataset.i];
+  if (!item) return;
+  S.input = item.result;
+  S.result = item.result;
+  S.justEvaluated = true;
+  S.error = false;
+  render(true);
+  toast('Вставлено', '📋');
+});
+$('hclear').onclick = () => {
+  S.history = [];
+  saveHistory();
+  renderHistory();
+  toast('История очищена', '🗑');
+};
+$('hexp').onclick = () => {
+  if (!S.history.length) { toast('История пуста', '⚠'); return; }
+  const text = S.history.map(h => `${h.expr} = ${h.result}  [${h.time}]`).join('\n');
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `calc-history-${new Date().toISOString().slice(0, 10)}.txt`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  toast('Экспортировано', '⬇');
+};
+
+/* ================= TOAST ================= */
+let toastTimer = null;
+const toast = (msg, icon = '📌') => {
+  document.querySelectorAll('.toast').forEach(t => t.remove());
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = `${icon} ${msg}`;
+  document.body.appendChild(t);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    t.style.opacity = '0';
+    t.style.transition = 'opacity .3s';
+    setTimeout(() => t.remove(), 320);
+  }, 1600);
+};
+
+/* ================= RENDER ================= */
+const render = (bounce = false) => {
+  // Expression
+  E.textContent = S.input || '';
+
+  // Result
+  let display = S.result;
+  let isError = S.error;
+
+  if (!isError && S.input && !S.justEvaluated) {
+    try {
+      display = evaluate(S.input);
+      isError = false;
+    } catch {
+      display = S.result;
+      isError = S.error;
+    }
+  }
+
+  R.innerHTML = '';
+  const textNode = document.createTextNode(display);
+  R.appendChild(textNode);
+  if (!isError) {
+    const cur = document.createElement('span');
+    cur.className = 'cursor';
+    R.appendChild(cur);
+  }
+
+  R.className = 'res';
+  if (isError) R.classList.add('error');
+  else if (display.length > 12) R.classList.add('shrink');
+  if (bounce && !isError) {
+    R.classList.add('bounce');
+    setTimeout(() => R.classList.remove('bounce'), 250);
+  }
+
+  // Memory pill
+  if (S.memory !== null) {
+    PILL_MEM.textContent = `💾 ${fmt(S.memory)}`;
+    PILL_MEM.classList.add('active');
+  } else {
+    PILL_MEM.textContent = '💾 —';
+    PILL_MEM.classList.remove('active');
+  }
+
+  // Mode pill
+  PILL_MODE.textContent = S.mode.toUpperCase();
+
+  // Active op highlight
+  document.querySelectorAll('.btn.op').forEach(b => b.classList.remove('active-op'));
+  if (S.input && !S.justEvaluated) {
+    const last = S.input.trim().slice(-1);
+    if ('+-*/%'.includes(last)) {
+      const btn = document.querySelector(`.btn.op[data-v="${last}"]`);
+      if (btn) btn.classList.add('active-op');
+    }
+  }
+};
+
+/* ================= ACTIONS ================= */
+const reset = () => {
+  S.input = '';
+  S.result = '0';
+  S.justEvaluated = false;
+  S.error = false;
+  render();
+};
+
+const appendInput = txt => {
+  if (S.error) reset();
+  if (S.justEvaluated) {
+    if ('+-*/^%'.includes(txt)) {
+      S.input = S.result + txt;
+    } else {
+      S.input = txt;
+      S.result = '0';
+    }
+    S.justEvaluated = false;
+    S.error = false;
+    render(true);
+    return;
+  }
+  if (S.input.length + txt.length > MAX_INPUT) {
+    toast('Слишком длинное', '⚠');
+    return;
+  }
+  const last = S.input.slice(-1);
+  const isOp = c => '+-*/^%'.includes(c);
+  if (isOp(txt) && isOp(last) && !(txt === '-' && isOp(last))) {
+    S.input = S.input.slice(0, -1) + txt;
+    render();
+    return;
+  }
+  if (txt === '.') {
+    const m = S.input.match(/(\d*\.?\d*)$/);
+    if (m && m[1].includes('.')) return;
+  }
+  if (txt === '.' && (S.input === '' || isOp(last) || last === '(')) {
+    S.input += '0.';
+    render(true);
+    return;
+  }
+  S.input += txt;
+  render(true);
+};
+
+const backspace = () => {
+  if (S.error) { reset(); return; }
+  if (S.justEvaluated) { reset(); return; }
+  if (!S.input) return;
+  // Delete whole function tokens
+  const funcs = ['asin(', 'acos(', 'atan(', 'sinh(', 'cosh(', 'tanh(', 'sqrt(', 'cbrt(', 'log2(', 'floor(', 'ceil(', 'round(', 'sin(', 'cos(', 'tan(', 'log(', 'exp(', 'abs(', 'ln(', '1/x', 'x²', 'n!', '√(', 'π', 'e'];
+  for (const f of funcs) {
+    if (S.input.endsWith(f)) {
+      S.input = S.input.slice(0, -f.length);
+      render();
+      return;
+    }
+  }
+  S.input = S.input.slice(0, -1);
+  render();
+};
+
+const equals = () => {
+  if (!S.input) return;
+  try {
+    const res = evaluate(S.input);
+    const expr = S.input;
+    S.result = res;
+    S.input = expr;
+    S.justEvaluated = true;
+    S.error = false;
+    addHistory(expr, res);
+    render(true);
+    toast(`= ${res}`, '✅');
+  } catch (err) {
+    S.error = true;
+    S.result = err.message || 'Ошибка';
+    render();
+    toast(err.message || 'Ошибка', '❌');
+  }
+};
+
+const toggleSign = () => {
+  if (S.error) reset();
+  if (!S.input) { S.input = '-'; render(); return; }
+  if (/^-?\d*\.?\d*$/.test(S.input)) {
+    S.input = S.input.startsWith('-') ? S.input.slice(1) : '-' + S.input;
+    render(true);
+    return;
+  }
+  S.input = `-(${S.input})`;
+  render(true);
+};
+
+const wrapFunc = fn => {
+  if (S.error) reset();
+  let base = S.input || S.result || '0';
+  if (S.justEvaluated) base = S.result;
+
+  const wraps = {
+    'sin': `sin(${base})`, 'cos': `cos(${base})`, 'tan': `tan(${base})`,
+    'asin': `asin(${base})`, 'acos': `acos(${base})`, 'atan': `atan(${base})`,
+    'sinh': `sinh(${base})`, 'cosh': `cosh(${base})`, 'tanh': `tanh(${base})`,
+    'ln': `ln(${base})`, 'log': `log(${base})`, 'log2': `log2(${base})`,
+    'exp': `exp(${base})`, 'abs': `abs(${base})`, 'sqrt': `sqrt(${base})`,
+    'cbrt': `cbrt(${base})`, 'floor': `floor(${base})`, 'ceil': `ceil(${base})`,
+    'round': `round(${base})`,
+    '√': `√(${base})`, 'x²': `(${base})²`, '1/x': `1/(${base})`, 'n!': `(${base})!`,
+  };
+  S.input = wraps[fn] || base;
+  S.justEvaluated = false;
+  S.error = false;
+  render(true);
+};
+
+const copyResult = () => {
+  const text = R.textContent.replace(/\s*$/, '').trim();
+  if (!text || text === 'Ошибка') return;
+  const done = () => toast('Скопировано', '✅');
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+  } else fallbackCopy(text, done);
+};
+const fallbackCopy = (text, done) => {
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); done(); } catch { toast('Ошибка копирования', '❌'); }
+  document.body.removeChild(ta);
+};
+
+const memoryAction = act => {
+  const current = parseFloat(R.textContent);
+  if (isNaN(current) && act !== 'mc' && act !== 'mr') { toast('Нет числа', '⚠'); return; }
+  switch (act) {
+    case 'mc': S.memory = null; toast('Память очищена', '🗑'); break;
+    case 'mr':
+      if (S.memory === null) { toast('Память пуста', '⚠'); return; }
+      S.input = fmt(S.memory); S.result = S.input; S.justEvaluated = true; S.error = false;
+      toast('Из памяти', '📥'); break;
+    case 'm+': S.memory = (S.memory || 0) + current; toast(`M+ → ${fmt(S.memory)}`, '➕'); break;
+    case 'm-': S.memory = (S.memory || 0) - current; toast(`M− → ${fmt(S.memory)}`, '➖'); break;
+    case 'ms': S.memory = current; toast(`Сохранено: ${fmt(S.memory)}`, '💾'); break;
+  }
+  render();
+};
+
+/* ================= BUTTON LAYOUTS ================= */
+const LAYOUTS = {
+  basic: [
+    ['c', 'AC', 'cl'], ['b', '⌫', 'bk'], ['(', '(', 'fn'], [')', ')', 'fn'], ['%', '%', 'fn'],
+    ['mc', 'MC', 'bk'], ['mr', 'MR', 'bk'], ['m+', 'M+', 'bk'], ['m-', 'M−', 'bk'], ['±', '±', 'fn'],
+    ['7', '7', ''], ['8', '8', ''], ['9', '9', ''], ['/', '÷', 'op'], ['*', '×', 'op'],
+    ['4', '4', ''], ['5', '5', ''], ['6', '6', ''], ['-', '−', 'op'], ['+', '+', 'op'],
+    ['1', '1', ''], ['2', '2', ''], ['3', '3', ''], ['^', 'x^y', 'fn'], ['=', '=', 'eq'],
+    ['0', '0', 'zero'], ['.', ',', ''], ['π', 'π', 'fn'], ['copy', '📋', 'fn'],
+  ],
+  scientific: [
+    ['c', 'AC', 'cl'], ['b', '⌫', 'bk'], ['(', '(', 'fn'], [')', ')', 'fn'], ['%', '%', 'fn'], ['π', 'π', 'fn'],
+    ['sin', 'sin', 'fn'], ['cos', 'cos', 'fn'], ['tan', 'tan', 'fn'], ['ln', 'ln', 'fn'], ['log', 'log', 'fn'], ['√', '√', 'fn'],
+    ['asin', 'sin⁻¹', 'fn'], ['acos', 'cos⁻¹', 'fn'], ['atan', 'tan⁻¹', 'fn'], ['exp', 'eˣ', 'fn'], ['x²', 'x²', 'fn'], ['x^y', 'x^y', 'fn'],
+    ['sinh', 'sinh', 'fn'], ['cosh', 'cosh', 'fn'], ['tanh', 'tanh', 'fn'], ['abs', '|x|', 'fn'], ['1/x', '1/x', 'fn'], ['n!', 'n!', 'fn'],
+    ['mc', 'MC', 'bk'], ['mr', 'MR', 'bk'], ['m+', 'M+', 'bk'], ['m-', 'M−', 'bk'], ['ms', 'MS', 'bk'], ['±', '±', 'fn'],
+    ['7', '7', ''], ['8', '8', ''], ['9', '9', ''], ['/', '÷', 'op'], ['*', '×', 'op'], ['^', 'x^y', 'op'],
+    ['4', '4', ''], ['5', '5', ''], ['6', '6', ''], ['-', '−', 'op'], ['+', '+', 'op'], ['copy', '📋', 'fn'],
+    ['1', '1', ''], ['2', '2', ''], ['3', '3', ''], ['log2', 'log₂', 'fn'], ['cbrt', '∛', 'fn'], ['floor', '⌊x⌋', 'fn'],
+    ['0', '0', 'zero'], ['.', ',', ''], ['ceil', '⌈x⌉', 'fn'], ['round', 'round', 'fn'], ['=', '=', 'eq'],
+  ],
+};
+
+const buildButtons = () => {
+  BTNS.innerHTML = '';
+  const layout = LAYOUTS[S.mode];
+  BTNS.className = 'btns' + (S.mode === 'scientific' ? ' scientific' : '');
+  layout.forEach(([v, label, cls]) => {
+    const b = document.createElement('button');
+    b.className = 'btn ' + cls;
+    b.dataset.v = v;
+    b.textContent = label;
+    b.setAttribute('aria-label', label);
+    b.addEventListener('click', e => {
+      handle(v);
+      // Ripple
+      const rect = b.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      const ripple = document.createElement('span');
+      ripple.className = 'ripple';
+      ripple.style.width = ripple.style.height = size + 'px';
+      ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+      ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+      b.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+      // Haptic
+      if (navigator.vibrate) navigator.vibrate(8);
+    });
+    BTNS.appendChild(b);
+  });
+};
+
+/* ================= MODE ================= */
+const setMode = m => {
+  S.mode = m;
+  store.set('mode', m);
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === m));
+  $('hint-keys').textContent = m === 'scientific'
+    ? 'sin cos tan ln log · p=π s=±'
+    : 'Enter = · Esc = AC · p=π s=±';
+  buildButtons();
+  render();
+};
+document.querySelectorAll('.mode-btn').forEach(b => {
+  b.onclick = () => setMode(b.dataset.mode);
+});
+
+/* ================= ANGLE ================= */
+const setAngle = a => {
+  S.angle = a;
+  store.set('angle', a);
+  PILL_ANGLE.textContent = a;
+  PILL_ANGLE.title = 'Угол: ' + a;
+};
+PILL_ANGLE.onclick = () => {
+  const order = ['DEG', 'RAD', 'GRAD'];
+  const next = order[(order.indexOf(S.angle) + 1) % order.length];
+  setAngle(next);
+  toast('Угол: ' + next, '📐');
+};
+
+/* ================= HANDLE ================= */
+const handle = v => {
+  if (/^\d$/.test(v) || v === '.') { appendInput(v); return; }
+  if (['+', '-', '*', '/', '^', '%'].includes(v)) { appendInput(v); return; }
+  if (v === '(' || v === ')') {
+    if (S.error) reset();
+    if (S.justEvaluated) {
+      S.input = v === '(' ? '(' : S.result + ')';
+      S.justEvaluated = false;
+    } else S.input += v;
+    render(true);
+    return;
+  }
+  if (v === 'π') { appendInput('π'); return; }
+  if (v === 'e') { appendInput('e'); return; }
+  if (['√', 'x²', '1/x', 'n!', '±'].includes(v)) { wrapFunc(v === '±' ? '' : v); if (v === '±') toggleSign(); return; }
+  // Scientific functions
+  const sciFns = ['sin', 'cos', 'tan', 'asin', 'acos', 'atan', 'sinh', 'cosh', 'tanh',
+                   'ln', 'log', 'log2', 'exp', 'abs', 'sqrt', 'cbrt', 'floor', 'ceil', 'round'];
+  if (sciFns.includes(v)) { wrapFunc(v); return; }
+
+  switch (v) {
+    case 'c': reset(); toast('Очищено', '🧹'); return;
+    case 'b': backspace(); return;
+    case '=': equals(); return;
+    case 'copy': copyResult(); return;
+    case 'mc': case 'mr': case 'm+': case 'm-': case 'ms': memoryAction(v); return;
+  }
+};
+
+/* ================= KEYBOARD ================= */
+document.addEventListener('keydown', e => {
+  if (e.target.matches('input, textarea, [contenteditable]')) return;
+  const k = e.key;
+  if (/^\d$/.test(k)) { e.preventDefault(); handle(k); return; }
+  if (k === '.' || k === ',') { e.preventDefault(); handle('.'); return; }
+  if (['+', '-', '*', '/', '^', '%'].includes(k)) { e.preventDefault(); handle(k); return; }
+  if (k === '(' || k === ')') { e.preventDefault(); handle(k); return; }
+  if (k === 'Enter' || k === '=') { e.preventDefault(); handle('='); return; }
+  if (k === 'Backspace') { e.preventDefault(); handle('b'); return; }
+  if (k === 'Escape' || k === 'Delete') { e.preventDefault(); handle('c'); return; }
+  if (e.ctrlKey && (k === 'c' || k === 'C')) { e.preventDefault(); copyResult(); return; }
+  if (e.ctrlKey && (k === 'm' || k === 'M')) { e.preventDefault(); handle('mc'); return; }
+  switch (k.toLowerCase()) {
+    case 'p': handle('π'); break;
+    case 's': handle('±'); break;
+    case 'q': handle('√'); break;
+    case 'w': handle('x²'); break;
+    case 'r': handle('1/x'); break;
+    case 'f': handle('n!'); break;
+    case 'l': handle('ln'); break;
+    case 'g': handle('log'); break;
+  }
+});
+
+/* ================= INIT ================= */
+loadHistory();
+renderHistory();
+setAngle(store.get('angle', 'DEG'));
+setMode(store.get('mode', 'basic'));
+reset();
+
+// Welcome toast
+setTimeout(() => {
+  const seen = store.get('welcomed', false);
+  if (!seen) {
+    store.set('welcomed', true);
+    toast('Горячие клавиши: цифры · p=π · s=± · q=√ · l=ln · g=log', '⌨️');
+  }
+}, 800);
+
 })();
 </script>
 </body>
